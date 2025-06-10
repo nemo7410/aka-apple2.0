@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8" />
+    <title>Westside Urban Street Plan</title>
+
+    <!-- 共用樣式 -->
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- 地圖相關腳本 -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
+    
+    <!-- 共用腳本 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/map.js"></script>
+
+    <!-- 頁面專用樣式 -->
+    <link rel="stylesheet" href="styles/index.css">
+</head>
+
+<body>
+    <!-- 導航列會由 common.js 自動載入 -->
+    <div class="nav-container">
+        <!-- 導航列內容 -->
+    </div>
+
+    <!-- 固定視窗：地圖與圖例 -->
+    <div id="map-wrapper">
+        <div id="map"></div>
+        <!-- 圖例會由 map.js 動態添加 -->
+    </div>
+
+    <!-- 文字敘事區（Scroll） -->
+    <article id="scrolly">
+        <!-- 第1頁 - 團隊介紹 -->
+        <section class="panel H1" data-stage="1">
+            <div class="team-content">
+                <h1>aka.APPLE 2.0</h1>
+                <p class="team-subtitle">Division of labor within the team</p>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="member-avatar">
+                            <img src="./images/dai-ling.png" alt="Team Member">
+                        </div>
+                        <h3>113588004 董岱靈</h3>
+                        <div class="member-skills">
+                            <span>Data Collection</span>
+                            <span>Webpage Design</span>
+                            <span>Copywriting</span>
+                        </div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">
+                            <img src="./images/tao-hua.jpg" alt="Team Member">
+                        </div>
+                        <h3>113588012 劉陶樺</h3>
+                        <div class="member-skills">
+                            <span>Webpage Building</span>
+                            <span>Webpage Design</span>
+                            <span>Data Visualization</span>
+                        </div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">
+                            <img src="./images/xuan-yi.jpg" alt="Team Member">
+                        </div>
+                        <h3>113588021 陳宣貽</h3>
+                        <div class="member-skills">
+                            <span>Product Modeling</span>
+                            <span>Webpage Design</span>
+                            <span>Data Collection</span>
+                        </div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">
+                            <img src="./images/jia-xun.jpg" alt="Team Member">
+                        </div>
+                        <h3>113588030 張家薰</h3>
+                        <div class="member-skills">
+                            <span>Image Generation</span>
+                            <span>Webpage Design</span>
+                            <span>Data Collection</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第2頁 - 首頁 -->
+        <section class="panel landing H2" data-stage="2">
+            <div class="hero-background">
+                <div class="hero-content">
+                    <h1>Westside Urban Street Plan</h1>
+                    <p>Introduction and Development of the Taipei West Gateway Project.</p>
+                    <a href="street-plan.html" class="intro-btn">Introduce</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第3頁 - Problem 頁面 -->
+        <section class="panel H3" data-stage="3">
+            <div class="problems-content">
+                <h1 class="problems-title">Problems</h1>
+                <div class="problems-grid">
+                    <div class="problem-item">
+                        <div class="problem-icon">
+                            <img src="./images/location-pin.png" alt="Street View">
+                        </div>
+                        <h3>Street View</h3>
+                        <p>We aim to unify the urban landscape style with the architectural style of Taipei's historical landmarks.</p>
+                        <button class="solution-btn" data-target="8">Solution</button>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-icon">
+                            <img src="./images/garbage-1.png" alt="Trash Bin">
+                        </div>
+                        <h3>Trash Bin</h3>
+                        <p>It is necessary to install more trash bins with built-in waste compression and smart notification systems to indicate when they are full.</p>
+                        <button class="solution-btn" data-target="13">Solution</button>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-icon">
+                            <img src="./images/eat.png" alt="Dining Area">
+                        </div>
+                        <h3>Dinning Area</h3>
+                        <p>Designate several standing dining areas that can also serve as event spaces.</p>
+                        <button class="solution-btn" data-target="14">Solution</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第4頁 - 照片展示 -->
+        <section class="panel fullwidth H4" data-stage="4">
+            <div class="photo-gallery">
+                <h1 class="gallery-title">Project Gallery</h1>
+                <p class="gallery-subtitle">The changes we made to the urban landscape of Taipei's Westside</p>
+                
+                <div class="photo-grid">
+                    <div class="photo-item large">
+                        <img src="./images/hotel-a.png" alt="Hotel Transformation">
+                        <div class="photo-overlay">
+                            <h3>Hotel Renovation</h3>
+                            <p>Modern architectural integration with historical elements</p>
+                        </div>
+                    </div>
+                    
+                    <div class="photo-item">
+                        <img src="./images/starbucks-a.png" alt="Starbucks Design">
+                        <div class="photo-overlay">
+                            <h3>Commercial Space</h3>
+                            <p>Harmonious blend of modern and traditional</p>
+                        </div>
+                    </div>
+                    
+                    <div class="photo-item">
+                        <img src="./images/chicken-shop-a.png" alt="Restaurant Design">
+                        <div class="photo-overlay">
+                            <h3>Local Cuisine</h3>
+                            <p>Preserving cultural identity in urban design</p>
+                        </div>
+                    </div>
+                    
+                    <div class="photo-item">
+                        <img src="./images/taipei-national-photography-center.png" alt="Cultural Center">
+                        <div class="photo-overlay">
+                            <h3>Cultural Heritage</h3>
+                            <p>Photography museum as design inspiration</p>
+                        </div>
+                    </div>
+                    
+                    <div class="photo-item wide">
+                        <img src="./images/plaza-a.png" alt="Public Plaza">
+                        <div class="photo-overlay">
+                            <h3>Public Plaza</h3>
+                            <p>Creating community gathering spaces</p>
+                        </div>
+                    </div>
+                    
+                    <div class="photo-item">
+                        <img src="./images/smoking-area-a.png" alt="Smoking Area">
+                        <div class="photo-overlay">
+                            <h3>Designated Areas</h3>
+                            <p>Thoughtful urban planning solutions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </article>
+
+    <!-- 進度條 -->
+    <div class="progress-bar">
+        <div class="progress"></div>
+    </div>
+
+    <!-- 初始化腳本 -->
+    <script>
+        // 頁面載入完成後初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化地圖（如果 map.js 已載入）
+            if (typeof initMap === 'function') {
+                initMap();
+            }
+            
+            // 初始化滾動動畫
+            initScrollAnimations();
+        });
+
+        // 滾動動畫初始化
+        function initScrollAnimations() {
+            // 註冊 ScrollTrigger 插件
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // 為每個 panel 設置滾動觸發器
+            gsap.utils.toArray('.panel').forEach((panel, index) => {
+                ScrollTrigger.create({
+                    trigger: panel,
+                    start: 'top center',
+                    end: 'bottom center',
+                    onEnter: () => updateStage(index + 1),
+                    onEnterBack: () => updateStage(index + 1)
+                });
+            });
+            
+            // 進度條動畫
+            ScrollTrigger.create({
+                trigger: '#scrolly',
+                start: 'top top',
+                end: 'bottom bottom',
+                onUpdate: self => {
+                    const progress = document.querySelector('.progress');
+                    if (progress) {
+                        progress.style.height = (self.progress * 100) + '%';
+                    }
+                }
+            });
+        }
+
+        // 更新當前階段
+        function updateStage(stage) {
+            console.log('當前階段:', stage);
+            
+            // 更新地圖顯示（如果有相關函數）
+            if (typeof updateMapForStage === 'function') {
+                updateMapForStage(stage);
+            }
+        }
+    </script>
+</body>
+</html>
