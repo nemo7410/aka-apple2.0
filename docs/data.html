@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8" />
+    <title>Data Analysis - Westside Urban Street Plan</title>
+
+    <!-- 共用樣式 -->
+    <link rel="stylesheet" href="styles/common.css">
+    <!-- 注意：暫時不要引入 components.css，因為會有衝突 -->
+    <!-- <link rel="stylesheet" href="styles/components.css"> -->
+    
+    <!-- 頁面專用樣式 -->
+    <link rel="stylesheet" href="styles/data.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- 地圖相關腳本 -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
+    
+    <!-- Leaflet Routing Machine -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    
+    <!-- 共用腳本 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="js/common.js"></script>
+
+    <!-- 專門為第七、八頁設計的全螢幕背景圖片樣式 -->
+    <style>
+        /* 第7頁全螢幕背景樣式 */
+        .panel.D6[data-stage="7"] {
+            min-height: 100vh;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            background-image: url('./images/map-1-smoking-area.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+            flex-direction: column;
+            color: white;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+        
+        .panel.D6[data-stage="7"]::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+        
+        .panel.D6[data-stage="7"] > * {
+            position: relative;
+            z-index: 2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            text-align: left;
+            margin: 0;
+        }
+        
+        .panel.D6[data-stage="7"] h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            max-width: 500px;
+        }
+        
+        .panel.D6[data-stage="7"] p {
+            font-size: 1.1em;
+            max-width: 500px;
+            line-height: 1.5;
+        }
+        
+        /* 第8頁全螢幕背景樣式 */
+        .panel.D7[data-stage="8"] {
+            min-height: 100vh;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            background-image: url('./images/map-1-dining-area.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+            flex-direction: column;
+            color: white;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+        
+        .panel.D7[data-stage="8"]::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+        
+        .panel.D7[data-stage="8"] > * {
+            position: relative;
+            z-index: 2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            text-align: left;
+            margin: 0;
+        }
+        
+        .panel.D7[data-stage="8"] h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            max-width: 500px;
+        }
+        
+        .panel.D7[data-stage="8"] p {
+            font-size: 1.1em;
+            max-width: 500px;
+            line-height: 1.5;
+        }
+        
+        /* 響應式調整 */
+        @media (max-width: 768px) {
+            .panel.D6[data-stage="7"],
+            .panel.D7[data-stage="8"] {
+                padding: 20px;
+            }
+            
+            .panel.D6[data-stage="7"] h1,
+            .panel.D7[data-stage="8"] h1 {
+                font-size: 1.8em;
+                max-width: 100%;
+            }
+            
+            .panel.D6[data-stage="7"] p,
+            .panel.D7[data-stage="8"] p {
+                font-size: 1em;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 導航列會由 common.js 自動載入 -->
+    <div class="nav-container">
+        <!-- 導航列內容 -->
+    </div>
+    
+    <!-- 地圖容器 -->
+    <div id="map-wrapper">
+        <div id="map"></div>
+    </div>
+
+    <!-- 滾動內容 -->
+    <article id="scrolly">
+        <!-- 熱力圖頁面 -->
+        <section class="panel D1" data-stage="2">
+            <h1>Restaurant & Legal B&Bs Distribution Heat Map</h1>
+            <p>This "Taipei City Facility Distribution Heat Map" illustrates the hotspots for restaurants and accommodations in Taipei City. The map clearly shows a high concentration of facilities around Taipei Main Station, with another equally dense hotspot located in Ximending.</p>
+        </section>
+
+        <!-- 旅館分布頁面 -->
+        <section class="panel D2" data-stage="3">
+            <h1>Statistics of Legal B&Bs in Taipei City</h1>
+            <p>This area hosts many legal B&Bs, drawing numerous tourists due to its access to transport and attractions. While this boosts local economic vitality, it also affects the environment and residents' quality of life. Balancing tourism growth with community well-being is essential.</p>
+            <span class="total-number">Total Number | 31</span>
+        </section>
+
+        <!-- 餐廳分布頁面 -->
+        <section class="panel D3" data-stage="4">
+            <h1>Restaurant Snacks Statistics</h1>
+            <p>This area's abundance of restaurants and snacks attracts many locals and tourists, especially during holidays and peak hours. While it boosts the local economy and establishes the area as a key food destination, it also brings challenges like hygiene and traffic congestion.</p>
+            <span class="total-number">Total Number | 45</span>
+        </section>
+
+        <!-- 垃圾車和垃圾桶分布頁面 -->
+        <section class="panel D4" data-stage="5">
+            <h1>Taipei City Trash Can</h1>
+            <p>The number of trash cans in this area is very low. Currently, there are only trash cans on the main road (Zhongxiao West Road) and none in the park or the inner area where food is sold. Taipei residents are used to taking their garbage to the MRT station, but this is a problem for foreign tourists.</p>
+            <span class="total-number">Total Number | 11</span>
+        </section>
+
+        <!-- 整體設施分布頁面 -->
+        <section class="panel D5" data-stage="6">
+            <h1>Overall Facility Distribution</h1>
+            <p>By examining the distribution of all facilities, we can identify the density of various service establishments…</p>
+            <span class="total-number">Total Number | 87</span>
+        </section>
+
+        <!-- 第7頁 - 吸煙區背景圖 -->
+        <section class="panel D6" data-stage="7">
+            <h1>Smoking Area in the Middle of Shin Kong Mitsukoshi</h1>
+            <p>There's a spacious alley next to Shin Kong Mitsukoshi, ideal for an outdoor dining area. The nearby small stage could be used for performances, creating a lively open-air atmosphere.</p>
+            <br>
+            <li><strong>Taipei Main Station</strong>：6 minutes</li>
+            <li><strong>Mitsui Warehouse</strong>：7 minutes</li>
+            <li><strong>Taipei Post Office</strong>：7 minutes</li>
+            <li><strong>Beimen Sky Garden</strong>：8 minutes</li>
+            <li><strong>Taipei Twin Towers</strong>：8 minutes</li>
+            <li><strong>National Railway Museum</strong>：9 minutes</li>
+            <li><strong>Beimen MRT Station</strong>：13 minutes</li>
+        </section>
+
+        <!-- 第8頁 - 飲食區背景圖 -->
+        <section class="panel D7" data-stage="8">
+            <h1>Taipei Travel Plaza</h1>
+            <p>The Taipei Travel Plaza is located between our food and beverage area and the Twin Towers, serving as a central rest space. Visitors can purchase meals from the dining area and enjoy them at the plaza.</p>
+            <br>
+            <li><strong>Taipei Main Station</strong>：5 minutes</li>
+            <li><strong>Mitsui Warehouse</strong>：3 minutes</li>
+            <li><strong>Taipei Post Office</strong>：5 minutes</li>
+            <li><strong>Beimen Sky Garden</strong>：4 minutes</li>
+            <li><strong>Taipei Twin Towers</strong>：4 minutes</li>
+            <li><strong>National Railway Museum</strong>：6 minutes</li>
+            <li><strong>Beimen MRT Station</strong>：9 minutes</li>
+        </section>
+    </article>
+
+    <!-- 圖例 -->
+    <div id="heatmap-legend" class="legend" style="display: none;">
+        <h4>Facility Distribution Heat Map</h4>
+        <div class="legend-gradient"></div>
+        <div class="legend-labels">
+            <span>Low</span>
+            <span>High</span>
+        </div>
+    </div>
+
+    <div id="facility-legend" class="legend" style="display: none;">
+        <h4>Facility Distribution</h4>
+        <div class="legend-items">
+            <div><span style="display:inline-block;width:12px;height:12px;background:#3498db;margin-right:6px;"></span>B&Bs</div>
+            <div><span style="display:inline-block;width:12px;height:12px;background:#e74c3c;margin-right:6px;"></span>Restaurants</div>
+            <div><img src="./images/icon-garbage-truck.png" alt="Garbage Truck" style="width:16px;height:16px;margin-right:6px;vertical-align:middle;">Garbage Truck Stops</div>
+            <div><img src="./images/icon-trash-can.png" alt="Trash Can" style="width:16px;height:16px;margin-right:6px;vertical-align:middle;">Trash Cans</div>
+        </div>
+    </div>
+
+    <!-- 進度條 -->
+    <div class="progress-bar">
+        <div class="progress"></div>
+    </div>
+
+    <!-- 修正資料檔案路徑 -->
+    <script src="./data/map_data.js"></script>
+    <script src="./data/density_data.js"></script>
+
+    <!-- 地圖相關 JavaScript -->
+    <script>
+        /* ------------------ 地圖 & 圖層 ------------------ */
+        const map = L.map('map', {
+            center: [25.04677, 121.51187],
+            zoom: 13,
+            scrollWheelZoom: false,
+            dragging: true,
+            touchZoom: false,
+            doubleClickZoom: false,
+            boxZoom: false,
+            zoomControl: false,
+            keyboard: false,
+            attributionControl: true,
+            interactive: true
+        });
+
+        // 強制啟用拖曳功能
+        map.dragging.enable();
+
+        // 確保地圖容器可以接收滑鼠事件
+        document.getElementById('map').style.pointerEvents = 'auto';
+        document.getElementById('map-wrapper').style.pointerEvents = 'auto';
+
+        // 添加地圖圖層
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap & CARTO'
+        }).addTo(map);
+
+        // 設定顏色和圖標
+        const colors = {
+            hostel: '#3498db',
+            restaurant: '#e74c3c',
+            garbage_truck: '#2ecc71',
+            garbage_bin: '#800080'
+        };
+
+        // 創建自定義圖標
+        const icons = {
+            garbage_truck: L.icon({
+                iconUrl: './images/icon-garbage-truck.png',
+                iconSize: [20, 20],
+                iconAnchor: [10, 10],
+                popupAnchor: [0, -10]
+            }),
+            garbage_bin: L.icon({
+                iconUrl: './images/icon-trash-can.png',
+                iconSize: [20, 20],
+                iconAnchor: [10, 10],
+                popupAnchor: [0, -10]
+            })
+        };
+
+        const layers = {points: {}, heatmaps: {}};
+
+        // 初始化點位圖層（修改版）
+        Object.keys(mapData.area).forEach(type => {
+            const g = L.layerGroup();
+            mapData.area[type].forEach(f => {
+                const coords = [f.geometry.coordinates[1], f.geometry.coordinates[0]];
+                
+                // 根據類型選擇不同的標記方式
+                if (type === 'garbage_truck' || type === 'garbage_bin') {
+                    // 使用自定義圖標
+                    L.marker(coords, {
+                        icon: icons[type]
+                    }).addTo(g);
+                } else {
+                    // 使用原本的圓形標記
+                    L.circleMarker(coords, {
+                        radius: 6,
+                        fillColor: colors[type],
+                        color: colors[type],
+                        weight: 0,
+                        fillOpacity: 1
+                    }).addTo(g);
+                }
+            });
+            layers.points[type] = g;
+        });
+
+        // 分析區域多邊形
+        const analysisArea = L.polygon([
+            [25.04521,121.51501],[25.04465,121.51506],[25.04465,121.51692],
+            [25.04608,121.5173],[25.04673,121.51497],[25.04782,121.51514],
+            [25.04802,121.51331],[25.04841,121.51323],[25.04835,121.51155],
+            [25.04787,121.51129],[25.0473,121.51325],[25.04519,121.51318]
+        ], {
+            color: '#fff',
+            weight: 2,
+            fillColor: '#fff',
+            fillOpacity: 0.1
+        });
+
+        /* --------- 階段定義 --------- */
+        const stages = {
+            2: {
+                isHeatmap: true,
+                layers: [],
+                view: {center: [25.04754, 121.50644], zoom: 15},
+                enableDragging: true
+            },
+            3: {
+                layers: ['hostel'],
+                totalNumber: 'Total Number | 31',
+                view: {center: [25.04677, 121.51187], zoom: 17},
+                showArea: true
+            },
+            4: {
+                layers: ['restaurant'],
+                totalNumber: 'Total Number | 45',
+                view: {center: [25.04677, 121.51187], zoom: 17},
+                showArea: true
+            },
+            5: {
+                layers: ['garbage_truck', 'garbage_bin'],
+                totalNumber: 'Total Number | 11',
+                view: {center: [25.04677, 121.51187], zoom: 17},
+                showArea: true
+            },
+            6: {
+                layers: ['hostel', 'restaurant', 'garbage_truck', 'garbage_bin'],
+                totalNumber: 'Total Number | 87',
+                view: {center: [25.04677, 121.51187], zoom: 17},
+                showArea: true
+            },
+            // 簡化第7頁和第8頁，移除複雜的動畫邏輯
+            7: {
+                layers: [],
+                view: {center: [25.04677, 121.51187], zoom: 17},
+                hideMap: true  // 隱藏地圖，顯示背景圖
+            },
+            8: {
+                layers: [],
+                view: {center: [25.04677, 121.51187], zoom: 17},
+                hideMap: true  // 隱藏地圖，顯示背景圖
+            }
+        };
+
+        // 創建熱力圖層
+        function createHeatmapLayer(data) {
+            const heatData = [];
+            Object.keys(data).forEach(type => {
+                data[type].forEach(f => {
+                    heatData.push([f.geometry.coordinates[1], f.geometry.coordinates[0], 1]);
+                });
+            });
+            return L.heatLayer(heatData, {
+                radius: 10,
+                blur: 14,
+                maxZoom: 18,
+                minOpacity: 0.3,
+                gradient: {0.2: '#00ffff', 0.4: '#00ff00', 0.6: '#ffff00', 0.8: '#ff0000'}
+            });
+        }
+
+        /* ------------------ 核心：切換階段 ------------------ */
+        function updateStage(n) {
+            console.log("切換到階段:", n);
+            const stage = stages[n];
+
+            // 隱藏所有圖例
+            document.getElementById('heatmap-legend').style.display = 'none';
+            document.getElementById('facility-legend').style.display = 'none';
+
+            // 處理第7、8頁的背景圖顯示
+            if (stage.hideMap) {
+                document.getElementById('map-wrapper').style.display = 'none';
+            } else {
+                document.getElementById('map-wrapper').style.display = 'block';
+                
+                // Legend 顯示邏輯
+                document.getElementById('heatmap-legend').style.display = stage.isHeatmap ? 'block' : 'none';
+                document.getElementById('facility-legend').style.display = (stage.layers && stage.layers.length) ? 'block' : 'none';
+
+                // 清除舊圖層
+                Object.values(layers.points).forEach(l => {
+                    if(map.hasLayer(l)) map.removeLayer(l);
+                });
+                if(layers.heatmaps.citywide && map.hasLayer(layers.heatmaps.citywide)) {
+                    map.removeLayer(layers.heatmaps.citywide);
+                }
+                
+                // 清除分析區域
+                if(map.hasLayer(analysisArea)) {
+                    map.removeLayer(analysisArea);
+                }
+
+                // 添加新圖層
+                if(stage.isHeatmap) {
+                    layers.heatmaps.citywide = createHeatmapLayer(mapData.full);
+                    map.addLayer(layers.heatmaps.citywide);
+                } else if(stage.layers) {
+                    stage.layers.forEach(t => map.addLayer(layers.points[t]));
+                }
+
+                // 分析區域
+                if(stage.showArea) {
+                    map.addLayer(analysisArea);
+                }
+
+                // 調整視圖
+                if(stage.view) {
+                    map.setView(stage.view.center, stage.view.zoom, {animate: true, duration: 1});
+                }
+
+                // 確保地圖可以拖曳
+                map.dragging.enable();
+                
+                setTimeout(() => {
+                    map.dragging.enable();
+                    map._container.style.cursor = 'grab';
+                }, 100);
+            }
+
+            // 更新總數字
+            if(stage.totalNumber) {
+                document.querySelectorAll('.panel').forEach(sec => {
+                    const tn = sec.querySelector('.total-number');
+                    if(tn && sec.dataset.stage == n) {
+                        tn.textContent = stage.totalNumber;
+                        tn.style.display = 'inline';
+                    } else if(tn) {
+                        tn.style.display = 'none';
+                    }
+                });
+            }
+        }
+
+        /* ------------------ ScrollTrigger 設定 ------------------ */
+        gsap.registerPlugin(ScrollTrigger);
+
+        document.querySelectorAll('.panel').forEach(sec => {
+            const idx = +sec.dataset.stage;
+            ScrollTrigger.create({
+                trigger: sec,
+                start: "top center",
+                end: "bottom center",
+                onEnter: () => updateStage(idx),
+                onEnterBack: () => updateStage(idx),
+                // 更新進度條
+                onUpdate: self => {
+                    const progress = (self.progress + idx - 2) / (document.querySelectorAll('.panel').length - 1) * 100;
+                    document.querySelector('.progress').style.height = progress + "%";
+                }
+            });
+        });
+
+        /* ------------------ 初始化 ------------------ */
+        // 初始化第一個頁面（第2頁）
+        updateStage(2);
+
+        // 確保地圖可以拖曳
+        map.dragging.enable();
+        map.getContainer().style.cursor = 'grab';
+
+        // 移除所有可能的事件攔截
+        document.getElementById('map').addEventListener('mousedown', function(e) {
+            e.stopPropagation();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,767 @@
+data/* styles/components.css */
+/* 地圖相關樣式 */
+#map-wrapper {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: auto !important;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    pointer-events: auto !important;
+}
+
+/* 圖例樣式 */
+.legend {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px;
+    border-radius: 5px;
+    z-index: 1000;
+    color: white;
+    font-size: 14px;
+    min-width: 200px;
+}
+
+.legend h4 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+}
+
+.legend-gradient {
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(to right, 
+        #00ffff 0%,
+        #00ff00 33%,
+        #ffff00 66%,
+        #ff0000 100%
+    );
+    border-radius: 3px;
+    margin: 8px 0;
+}
+
+.legend-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+/* 進度條樣式 */
+.progress-bar {
+    position: fixed;
+    right: 3vw;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 50vh;
+    background: rgba(255,255,255,.1);
+    z-index: 3;
+}
+
+.progress-bar .progress {
+    width: 100%;
+    height: 0;
+    background: #3498db;
+}
+
+/* 圖片比較樣式 */
+.image-comparison {
+    position: relative;
+    width: 100vw;
+    height: 56.25vw;
+    max-height: 85vh;
+    margin: 0;
+    margin-left: calc(-50vw + 50%);
+}
+
+.image-comparison img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.image-comparison .before {
+    z-index: 2;
+    clip-path: inset(0 50% 0 0);
+}
+
+.before-label,
+.after-label {
+    position: absolute;
+    bottom: 20px;
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.before-label {
+    left: 20px;
+    z-index: 2;
+}
+
+.after-label {
+    right: 20px;
+    z-index: 1;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    width: 100%;
+    cursor: pointer;
+    z-index: 4;
+}
+
+.slider-line {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 4px;
+    height: 100%;
+    background: #fff;
+    transform: translateX(-50%);
+    z-index: 3;
+}
+
+.slider-handle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 100px;
+    background: #fff;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* 第七頁問題卡片樣式 */
+.problems-content {
+    position: relative;
+    z-index: 2;
+    padding: 5vh 5vw;
+    width: 100%;
+    min-height: 100vh;
+    background-color: rgba(0, 0, 0, 0.95);
+    color: #fff;
+}
+
+.problems-title {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 4rem;
+    color: #fff;
+}
+
+.problems-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.problem-item {
+    text-align: center;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
+    justify-content: space-between;
+}
+
+.problem-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.problem-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+.problem-item h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+.problem-item p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    color: #ccc;
+    flex-grow: 1;
+}
+
+.solution-btn {
+    padding: 0.8rem 2rem;
+    border: 1px solid #fff;
+    border-radius: 25px;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-self: center;
+    margin-top: auto;
+}
+
+.solution-btn:hover {
+    background: #fff;
+    color: #000;
+}
+
+/* Solution 頁面的共同樣式（第 8、12、13 頁） */
+.panel[data-stage="8"],
+.panel[data-stage="12"],
+.panel[data-stage="13"] {
+    width: 100vw !important;
+    min-height: 100vh !important;
+    margin-left: calc(-50vw + 50%);
+    padding: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* 各頁面的背景圖片 */
+.panel[data-stage="8"] {
+    background-image: url("../images/台北國家攝影文化中心.png");
+}
+
+.panel[data-stage="12"] {
+    background-image: url("./images/background2.jpg");
+}
+
+.panel[data-stage="13"] {
+    background-image: url("./images/background3.jpg");
+}
+
+/* 背景遮罩 */
+.panel[data-stage="8"]::before,
+.panel[data-stage="12"]::before,
+.panel[data-stage="13"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1;
+}
+
+/* 內容區域 */
+.street-view-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.street-view-content-inner {
+    background: rgba(255, 255, 255, 0.4);
+    padding: 4rem;
+    border-radius: 15px;
+    max-width: 800px;
+    width: 90%;
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+
+.street-view-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.street-view-title {
+    font-size: 3rem;
+    color: white;
+    margin-bottom: 3rem;
+    font-weight: bold;
+}
+
+.street-view-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    text-align: left;
+}
+
+.style-section h3,
+.features-section h3 {
+    font-size: 1.5rem;
+    color: white;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 0.5rem;
+}
+
+.style-section p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.features-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.features-section li {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.8rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.features-section li::before {
+    content: '•';
+    color: #3498db;
+    font-size: 1.2rem;
+    position: absolute;
+    left: 0;
+}
+
+/* 比較頁面的文字樣式 */
+.panel.fullwidth {
+    padding: 6rem 0 !important;
+}
+
+.panel.fullwidth .text-content {
+    padding: 0 5vw;
+    margin-bottom: 2rem;
+}
+
+.panel.fullwidth .image-comparison {
+    width: 100vw;
+    margin-left: 0;
+}
+
+/* 滑桿樣式更新 */
+.slider-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: white;
+    left: 90%;
+    z-index: 2;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.slider-handle {
+    position: absolute;
+    top: 50%;
+    left: 90%;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Problem 頁面特定樣式 */
+.panel[data-stage="3"] {
+    width: 100vw !important;
+    margin-left: calc(-50vw + 50%) !important;
+    margin-right: calc(-50vw + 50%) !important;
+    padding: 0 !important;
+    background: rgba(0, 0, 0, 0.95) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 100vh !important;
+}
+
+.panel[data-stage="3"] h1 {
+    font-size: 3rem;
+    margin-bottom: 4rem;
+    text-align: center;
+}
+
+.panel[data-stage="3"] .problems-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1200px;
+    width: 100%;
+    padding: 0 5vw;
+    margin: 0 auto;
+}
+
+.panel[data-stage="3"] .problem-item {
+    text-align: center;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 400px;
+}
+
+/* ========== 團隊介紹頁面樣式 ========== */
+.panel[data-stage="2"] {
+    width: 100vw !important;
+    margin-left: calc(-50vw + 50%) !important;
+    margin-right: calc(-50vw + 50%) !important;
+    padding: 0 !important;
+    background: #000 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 100vh !important;
+}
+
+.team-content {
+    text-align: center;
+    padding: 5vh 5vw;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.team-content h1 {
+    font-size: 4rem;
+    color: #fff;
+    margin-bottom: 1rem;
+    font-weight: 300;
+}
+
+.team-subtitle {
+    font-size: 1.5rem;
+    color: #ccc;
+    margin-bottom: 4rem;
+    font-weight: 300;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.team-member {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.team-member:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.member-avatar {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.member-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.team-member h3 {
+    font-size: 1.3rem;
+    color: #fff;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.member-skills {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.member-skills span {
+    font-size: 0.9rem;
+    color: #ccc;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.member-skills span:last-child {
+    border-bottom: none;
+}
+
+/* ========== 照片展示頁面樣式 ========== */
+.panel[data-stage="4"] {
+    width: 100vw !important;
+    margin-left: calc(-50vw + 50%) !important;
+    margin-right: calc(-50vw + 50%) !important;
+    padding: 0 !important;
+    background: #111 !important;
+    min-height: 100vh !important;
+}
+
+.photo-gallery {
+    padding: 5vh 5vw;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.gallery-title {
+    font-size: 3.5rem;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: 300;
+}
+
+.gallery-subtitle {
+    font-size: 1.2rem;
+    color: #ccc;
+    text-align: center;
+    margin-bottom: 4rem;
+    font-weight: 300;
+}
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 250px);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.photo-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.photo-item:hover {
+    transform: scale(1.05);
+}
+
+.photo-item.large {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+.photo-item.wide {
+    grid-column: span 2;
+}
+
+.photo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.photo-item:hover img {
+    transform: scale(1.1);
+}
+
+.photo-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.photo-item:hover .photo-overlay {
+    transform: translateY(0);
+}
+
+.photo-overlay h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.photo-overlay p {
+    font-size: 0.9rem;
+    color: #ccc;
+    line-height: 1.4;
+}
+
+/* 響應式設計 */
+@media (max-width: 1200px) {
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+    
+    .photo-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .photo-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(auto, 200px);
+    }
+    
+    .photo-item.large,
+    .photo-item.wide {
+        grid-column: span 1;
+        grid-row: span 1;
+    }
+}
+
+/* ========== 燈箱樣式 ========== */
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.lightbox.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.lightbox-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    background: #222;
+    border-radius: 10px;
+    overflow: hidden;
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+}
+
+.lightbox.active .lightbox-content {
+    transform: scale(1);
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+.lightbox-close:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.lightbox-image {
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+    object-fit: contain;
+    display: block;
+}
+
+.lightbox-info {
+    padding: 2rem;
+    color: #fff;
+}
+
+.lightbox-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+.lightbox-description {
+    font-size: 1rem;
+    color: #ccc;
+    line-height: 1.6;
+}
+
+/* 燈箱響應式設計 */
+@media (max-width: 768px) {
+    .lightbox-content {
+        max-width: 95vw;
+        max-height: 95vh;
+    }
+    
+    .lightbox-info {
+        padding: 1.5rem;
+    }
+    
+    .lightbox-title {
+        font-size: 1.3rem;
+    }
+    
+    .lightbox-description {
+        font-size: 0.9rem;
+    }
+}

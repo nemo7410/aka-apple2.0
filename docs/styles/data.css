@@ -1,0 +1,305 @@
+/* styles/data.css */
+/* 專門處理 data.html 的樣式，避免與其他頁面衝突 */
+
+/* ========== 基本樣式 ========== */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: "Microsoft JhengHei", sans-serif;
+    overflow-x: hidden;
+    background: #000;
+    color: #fff;
+    width: 100%;
+    position: relative;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}
+
+/* ========== 地圖相關樣式 ========== */
+#map-wrapper {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: auto !important;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    pointer-events: auto !important;
+    cursor: grab !important;
+}
+
+article#scrolly {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    overflow-x: hidden;
+    pointer-events: none;
+}
+
+/* ========== 統一的頁面樣式 ========== */
+.panel.D1, .panel.D2, .panel.D3, .panel.D4, .panel.D5 {
+    width: 45vw;
+    min-height: 100vh;
+    padding: 6rem 5vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: linear-gradient(to right, rgba(0,0,0,.85) 0%, rgba(0,0,0,0) 100%);
+    pointer-events: auto;
+}
+
+.panel.D1 h1, .panel.D2 h1, .panel.D3 h1, .panel.D4 h1, .panel.D5 h1 {
+    font-size: 2.4rem;
+    margin: 0 0 1rem 0;
+    color: #fff;
+    font-weight: 600;
+}
+
+.panel.D1 p, .panel.D2 p, .panel.D3 p, .panel.D4 p, .panel.D5 p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #ccc;
+    margin-bottom: 1rem;
+}
+
+/* ========== Total Number 樣式（統一設計） ========== */
+.panel.D1 .total-number, 
+.panel.D2 .total-number, 
+.panel.D3 .total-number, 
+.panel.D4 .total-number, 
+.panel.D5 .total-number {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 0.5rem 0;
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+    display: inline-block;
+}
+
+/* 不同頁面的 total-number 顏色 */
+.panel.D2 .total-number {
+    color: #3498db; /* 旅館 - 藍色 */
+}
+
+.panel.D3 .total-number {
+    color: #e74c3c; /* 餐廳 - 紅色 */
+}
+
+.panel.D4 .total-number {
+    color: #2ecc71; /* 垃圾設施 - 綠色 */
+}
+
+.panel.D5 .total-number {
+    color: #f39c12; /* 整體設施 - 橙色 */
+}
+
+/* ========== 圖例樣式 ========== */
+.legend {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px;
+    border-radius: 5px;
+    z-index: 1000;
+    color: white;
+    font-size: 14px;
+    min-width: 200px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.legend h4 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #fff;
+    font-weight: 500;
+}
+
+/* 熱力圖圖例 */
+#heatmap-legend .legend-gradient {
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(to right, 
+        #00ffff 0%,    /* 青色 - 低密度 */
+        #00ff00 33%,   /* 綠色 - 中低密度 */
+        #ffff00 66%,   /* 黃色 - 中高密度 */
+        #ff0000 100%   /* 紅色 - 高密度 */
+    );
+    border-radius: 3px;
+    margin: 8px 0;
+}
+
+#heatmap-legend .legend-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-top: 5px;
+    color: #ccc;
+}
+
+/* 設施圖例 */
+#facility-legend .legend-items {
+    margin-top: 10px;
+}
+
+#facility-legend .legend-items div {
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    font-size: 12px;
+}
+
+#facility-legend .legend-items div img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    filter: brightness(1.2);
+}
+
+/* 進度條樣式 */
+.progress-bar {
+    position: fixed;
+    right: 3vw;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 50vh;
+    background: rgba(255,255,255,.1);
+    z-index: 3;
+    border-radius: 2px;
+}
+
+.progress-bar .progress {
+    width: 100%;
+    height: 0;
+    background: linear-gradient(to bottom, #3498db, #2980b9);
+    border-radius: 2px;
+    transition: height 0.3s ease;
+}
+
+/* ========== 響應式設計 ========== */
+@media (max-width: 1200px) {
+    .panel.D1, .panel.D2, .panel.D3, .panel.D4, .panel.D5 {
+        width: 55vw;
+    }
+}
+
+@media (max-width: 768px) {
+    .panel.D1, .panel.D2, .panel.D3, .panel.D4, .panel.D5 {
+        width: 100vw;
+        padding: 4rem 5vw;
+        background: rgba(0, 0, 0, 0.9);
+    }
+    
+    .panel.D1 h1, .panel.D2 h1, .panel.D3 h1, .panel.D4 h1, .panel.D5 h1 {
+        font-size: 2rem;
+    }
+    
+    .legend {
+        right: 10px;
+        bottom: 10px;
+        min-width: 180px;
+        font-size: 12px;
+    }
+    
+    .progress-bar {
+        right: 2vw;
+        height: 40vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .panel.D1, .panel.D2, .panel.D3, .panel.D4, .panel.D5 {
+        padding: 3rem 4vw;
+    }
+    
+    .panel.D1 h1, .panel.D2 h1, .panel.D3 h1, .panel.D4 h1, .panel.D5 h1 {
+        font-size: 1.8rem;
+    }
+    
+    .legend {
+        min-width: 160px;
+        padding: 12px;
+    }
+}
+
+/* 第7和第8頁的特殊樣式 */
+.panel.D6,
+.panel.D7 {
+    background-color: #1a1a1a;
+    color: white;
+}
+
+.content-wrapper {
+    display: flex;
+    height: 100vh;
+    padding: 20px;
+}
+
+.image-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.info-container {
+    flex: 0 0 300px;
+    padding: 30px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.info-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.time-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.time-list li {
+    margin-bottom: 15px;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.time-list li:last-child {
+    border-bottom: none;
+}
+
+.time-list strong {
+    color: #3498db;
+}

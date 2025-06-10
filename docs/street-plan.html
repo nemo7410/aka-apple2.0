@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8" />
+    <title>Westside Urban Street Plan</title>
+
+    <!-- 共用樣式 -->
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- 頁面特定樣式 -->
+    <style>
+        /* 頁面特定的 CSS */
+        .panel.landing {
+            width: 100vw !important;
+            min-height: 100vh !important;
+            padding: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url("./images/homepage.jpg") center/cover no-repeat !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+        }
+
+        /* 專案卡片樣式 */
+        .panel.project-card {
+            width: 100vw !important;
+            min-height: 100vh !important;
+            padding: 0 !important;
+            background: #000 !important;
+            display: flex !important;
+            align-items: stretch !important;
+            justify-content: stretch !important;
+        }
+
+        /* 只對project-card頁面生效 */
+        .panel.project-card .project-content {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .panel.project-card .project-image {
+            width: 50vw;
+            height: 100vh;
+            order: 1;
+            position: relative;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        .panel.project-card .project-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+
+        .panel.project-card .project-info {
+            width: 50vw;
+            height: 100vh;
+            order: 2;
+            padding: 4rem;
+            background: #000;
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .project-info h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 3rem;
+            color: #fff;
+            margin-top: 2rem;
+        }
+
+        .project-details {
+            margin-bottom: 3rem;
+            flex-grow: 1;
+        }
+
+        .detail-item {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .detail-item:before {
+            content: "●";
+            color: #ccc;
+            font-size: 0.8rem;
+            margin-right: 1rem;
+            margin-top: 0.3rem;
+            flex-shrink: 0;
+        }
+
+        .detail-year {
+            color: #ccc;
+            font-size: 1.5rem;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .detail-label {
+            color: #ccc;
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        .project-description {
+            margin-top: auto;
+            padding-bottom: 2rem;
+        }
+
+        .description-placeholder {
+            display: none;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .project-content {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            .project-image {
+                width: 100%;
+                height: 50vh;
+            }
+
+            .project-info {
+                width: 100%;
+                height: auto;
+                padding: 2rem;
+            }
+
+            .project-info h1 {
+                font-size: 2rem;
+                margin-top: 1rem;
+                margin-bottom: 2rem;
+            }
+        }
+
+        /* 滾動區域樣式 */
+        article#scrolly {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* 面板樣式 */
+        .panel {
+            pointer-events: auto !important;
+        }
+
+        /* 覆蓋 common.css 中的 panel 限制 */
+        .panel.project-card {
+            width: 100vw !important;
+            padding: 0 !important;
+            min-height: 100vh;
+        }
+
+        /* 互動區塊樣式 */
+        .detail-block {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            opacity: 0.3; /* 預設透明度為60% */
+        }
+
+        .detail-block:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateX(5px);
+            opacity: 1; /* hover時透明度變為100% */
+        }
+
+        /* 當有任一區塊被hover時，其他區塊維持60%透明度 */
+        .project-details:hover .detail-block:not(:hover) {
+            opacity: 0.3;
+        }
+
+        /* 移除描述文字前的藍色點點 */
+        .detail-item.description-item:before {
+            display: none;
+        }
+
+        /* 保留年份前的藍色點點 */
+        .detail-item.year-item:before {
+            content: "●";
+            color: #4A9EFF;
+            font-size: 0.8rem;
+            margin-right: 1rem;
+            margin-top: 0.3rem;
+            flex-shrink: 0;
+        }
+
+        /* 地圖樣式 */
+        .location-map {
+            position: absolute;
+            bottom: 10rem;
+            right: 4rem;
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+        }
+
+        .map-image {
+            width: 300px;
+            height: auto;
+            border-radius: 0;
+            object-fit: contain;
+        }
+
+        /* 第三頁布局覆蓋 */
+        .panel[data-stage="3"] {
+            height: 100vh !important;
+            width: 100vw !important;
+            padding: 0 !important;
+        }
+
+        .panel[data-stage="3"] .project-content {
+            width: 100vw;        /* 滿版寬度 */
+            height: 100vh;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .panel[data-stage="3"] .project-image {
+            width: 50vw;         /* 右側50vw */
+            height: 100vh;
+            order: 2;            /* 圖片在右 */
+            margin: 0;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 第三頁互動區塊樣式 */
+        .panel[data-stage="3"] .detail-block {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            opacity: 0.6;
+        }
+
+        .panel[data-stage="3"] .detail-block:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateX(5px);
+            opacity: 1;
+        }
+
+        .panel[data-stage="3"] .project-details:hover .detail-block:not(:hover) {
+            opacity: 0.6;
+        }
+
+        /* 移除描述文字前的藍色點點 */
+        .panel[data-stage="3"] .detail-item.description-item:before {
+            display: none;
+        }
+
+        /* 保留年份前的藍色點點 */
+        .panel[data-stage="3"] .detail-item.year-item:before {
+            content: "●";
+            color: #4A9EFF;
+            font-size: 0.8rem;
+            margin-right: 1rem;
+            margin-top: 0.3rem;
+            flex-shrink: 0;
+        }
+
+        /* 第三頁地圖圖片樣式 */
+        .panel[data-stage="3"] .location-map {
+            position: absolute;
+            bottom: 10rem;
+            left: 4rem;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-end;
+        }
+
+        /* 第三頁圖片滿版樣式 */
+        .panel[data-stage="3"] .project-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;         /* 填滿50vw的容器 */
+            height: 100vh;       /* 上下滿版 */
+            object-fit: cover;
+            display: block;
+        }
+
+        .panel[data-stage="3"] .map-image {
+            width: 300px;
+            height: auto;
+            border-radius: 0;
+            object-fit: contain;
+        }
+
+        /* 第三頁標題樣式 */
+        .panel[data-stage="3"] .project-info h1 {
+            font-size: 2rem;
+            text-align: left;
+            font-weight: bold;
+            margin-bottom: 3rem;
+            color: #fff;
+            margin-top: 2rem;
+        }
+        .panel[data-stage="3"] .project-info {
+            width: 50vw;         /* 左側50vw */
+            height: 100vh;
+            order: 1;            /* 文字在左 */
+            padding: 4rem;
+            background: #000;
+        }
+
+        .panel[data-stage="3"] .project-image {
+            width: 50vw;     /* 占右側一半 */
+            order: 2;        /* 圖片在右 */
+        }
+
+        /* 強力隱藏滾動條外觀，保持滾動功能 */
+        html, body {
+            scrollbar-width: none !important; /* Firefox */
+            -ms-overflow-style: none !important; /* IE and Edge */
+        }
+        
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar,
+        *::-webkit-scrollbar {
+            display: none !important; /* Chrome, Safari, Opera */
+            width: 0px !important;
+            height: 0px !important;
+            background: transparent !important;
+        }
+        
+        html::-webkit-scrollbar-track,
+        body::-webkit-scrollbar-track,
+        *::-webkit-scrollbar-track {
+            display: none !important;
+        }
+        
+        html::-webkit-scrollbar-thumb,
+        body::-webkit-scrollbar-thumb,
+        *::-webkit-scrollbar-thumb {
+            display: none !important;
+        }
+
+        .panel[data-stage="3"] .project-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;         /* 填滿50vw的容器 */
+            height: 100vh;       /* 上下滿版 */
+            object-fit: cover;
+        }
+
+        /* 第四頁樣式（跟第二頁相同） */
+        .panel[data-stage="4"] .project-content {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .panel[data-stage="4"] .project-image {
+            width: 50vw;
+            height: 100vh;
+            order: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel[data-stage="4"] .project-info {
+            width: 50vw;
+            height: 100vh;
+            order: 2;
+            padding: 4rem;
+            background: #000;
+        }
+
+        /* 第五頁樣式（跟第三頁相同） */
+        .panel[data-stage="5"] .project-content {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .panel[data-stage="5"] .project-info {
+            width: 50vw;
+            height: 100vh;
+            order: 1;
+            padding: 4rem;
+            background: #000;
+            position: relative; /* 確保支援絕對定位 */
+        }
+
+        .panel[data-stage="5"] .project-image {
+            width: 50vw;
+            height: 100vh;
+            order: 2;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 第五頁地圖樣式（跟第三頁相同） */
+        .panel[data-stage="5"] .location-map {
+            position: absolute;
+            bottom: 10rem;
+            left: 4rem;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-end;
+        }
+
+        .panel[data-stage="5"] .map-image {
+            width: 300px;
+            height: auto;
+            border-radius: 0;
+            object-fit: contain;
+        }
+
+        /* 第五頁圖片樣式 */
+        .panel[data-stage="5"] .project-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* 第六頁樣式（跟第二頁相同） */
+        .panel[data-stage="6"] .project-content {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .panel[data-stage="6"] .project-image {
+            width: 50vw;
+            height: 100vh;
+            order: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel[data-stage="6"] .project-info {
+            width: 50vw;
+            height: 100vh;
+            order: 2;
+            padding: 4rem;
+            background: #000;
+        }
+
+        /* 第七頁全景圖滿版樣式 */
+        .panel[data-stage="7"] {
+            width: 100vw !important;
+            height: 100vh !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .panel[data-stage="7"] .fullscreen-content {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 背景模糊圖片層 */
+        .panel[data-stage="7"] .fullscreen-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('./images/full-panorama.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(5px); /* 約80%模糊效果 */
+            z-index: 1;
+        }
+
+        /* 前景完整圖片 */
+        .panel[data-stage="7"] .panorama-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: contain; /* 完整呈現不裁切 */
+            object-position: center;
+            display: block;
+            margin: 0;
+            padding: 0;
+            z-index: 2; /* 在模糊背景之上 */
+        }
+
+        /* 20%黑色遮罩層 */
+        .panel[data-stage="7"]::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.2); /* 20%黑色遮罩 */
+            pointer-events: none; /* 讓遮罩不影響滑鼠事件 */
+            z-index: 3; /* 在圖片之上 */
+        }
+
+        /* 確保第七頁不受其他樣式影響 */
+        .panel.fullscreen-image {
+            width: 100vw !important;
+            padding: 0 !important;
+        }
+
+        .panel.fullscreen-image .fullscreen-content {
+            width: 100vw !important;
+            height: 100vh !important;
+            display: block !important;
+        }
+    </style>
+
+    <!-- 共用腳本 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="js/common.js"></script>
+</head>
+
+<body>
+    <!-- 導航列會由 common.js 自動載入 -->
+    <div class="nav-container">
+        <!-- 導航列內容 -->
+    </div>
+
+    <!-- 文字敘事區（Scroll） -->
+    <article id="scrolly">
+        <!-- 1 -->
+        <section class="panel landing" data-stage="1">
+            <div class="landing-content">
+                <h1 class="landing-title">Westside Urban Street Plan</h1>
+                <p class="landing-description">The West Gateway Project, launched in 2014 by former Taipei Mayor Ko Wen-je, follows an eight-year plan to "revitalize the old city and create Taipei's national gateway." It focuses on blending historical and modern architecture, making better use of idle land, and reorganizing traffic and pedestrian routes. The goal is to boost the area's industrial value and support nearby commercial growth.</p>
+            </div>
+        </section>
+        
+        <!-- 2 -->
+        <section class="panel project-card" data-stage="2">
+            <div class="project-content">
+                <div class="project-image">
+                    <!-- 預設顯示before圖片 -->
+                    <img id="project-main-img" src="./images/xining-housing-before-1.png" alt="西寧國宅照片" class="project-img">
+                </div>
+                <div class="project-info">
+                    <h1>Xining Public Housing</h1>
+                    <div class="project-details">
+                        <!-- 2025區塊 -->
+                        <div class="detail-block" data-image="./images/xining-housing-before-1.png">
+                            <div class="detail-item year-item">
+                                <span class="detail-year">2025</span>
+                            </div>
+                            <div class="detail-item description-item">
+                                <span class="detail-label">Completed demolition work.</span>
+                            </div>
+                        </div>
+                        <!-- 2026區塊 -->
+                        <div class="detail-block" data-image="./images/xining-housing-after-1.png">
+                            <div class="detail-item year-item">
+                                <span class="detail-year">2026</span>
+                            </div>
+                            <div class="detail-item description-item">
+                                <span class="detail-label">Redeveloped into social housing.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-description">
+                        <!-- 將灰色色塊替換為地圖圖片 -->
+                        <div class="location-map">
+                            <img src="./images/map-xining-housing.png" alt="西寧國宅位置地圖" class="map-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 3 -->
+        <section class="panel project-card" data-stage="3">
+            <div class="project-content reverse-layout">
+                <div class="project-info">
+                    <h1>Former Site of the Taipei City Council</h1>
+                    <div class="project-details">
+                        <!-- 2025區塊 -->
+                        <div class="detail-block" data-image="./images/taipei-council-before-1.png">
+                            <div class="detail-item year-item">
+                                <span class="detail-year">2025</span>
+                            </div>
+                            <div class="detail-item description-item">
+                                <span class="detail-label">Building...</span>
+                            </div>
+                        </div>
+                        <!-- 2028區塊 -->
+                        <div class="detail-block" data-image="./images/taipei-council-after-1.png">
+                            <div class="detail-item year-item">
+                                <span class="detail-year">2025</span>
+                            </div>
+                            <div class="detail-item description-item">
+                                <span class="detail-label">It will be transformed into an income-generating property, including an office building and the Taipei City Museum.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-description">
+                        <!-- 將灰色色塊替換為地圖圖片 -->
+                        <div class="location-map">
+                            <img src="./images/map-taipei-council-area-1.png" alt="台北市議會舊址位置地圖" class="map-image">
+                        </div>
+                    </div>
+                </div>
+                <div class="project-image">
+                    <!-- 預設顯示before圖片 -->
+                    <img id="project-main-img-3" src="./images/taipei-council-before-1.png" alt="台北市議會舊址照片" class="project-img">
+                </div>
+            </div>
+        </section>
+        
+        <!-- 4 -->
+        <section class="panel project-card" data-stage="4">
+            <div class="project-content">
+                <div class="project-image">
+                    <img id="project-main-img-4" src="./images/future-taipei-plaza-before-1.png" alt="第四頁專案照片" class="project-img">
+                </div>
+                <div class="project-info">
+                    <h1>Tomorrow Taipei Park</h1>
+                    <div class="project-details">
+                        <!-- 改為detail-block格式以支援hover -->
+                        <div class="detail-block" data-image="./images/future-taipei-plaza-before-1.png">
+                            <div class="detail-item year-item">
+                                <span class="detail-year">2025</span>
+                            </div>
+                            <div class="detail-item description-item">
+                                <span class="detail-label">Construction is scheduled to begin soon.This area, designated as the Taipei Main Station Special District (E1 and E2), will include residential buildings, commercial office towers, and preserved cultural heritage sites.</span>
+                            </div>
+                        </div>
+                        <!-- 2026區塊 -->
+                        <div class="detail-block" data-image="./images/future-taipei-plaza-after-1.png">
+                            <div class="detail-item year-item">
+                                <span class="detail-year">2026</span>
+                            </div>
+                            <div class="detail-item description-item">
+                                <span class="detail-label">Expected to be completed.</span>
+                            </div>
+                        </div>
+                        <!-- 可以添加更多detail-block -->
+                    </div>
+                    <div class="project-description">
+                        <div class="location-map">
+                            <img src="./images/map-future-taipei-plaza.png" alt="位置地圖" class="map-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 5 -->
+        <section class="panel project-card" data-stage="5">
+            <div class="project-content reverse-layout">
+                <div class="project-info">
+                    <h1>Taipei Twin Towers</h1>
+                    <div class="project-details">
+                        <div class="detail-block" data-image="./images/taipei-twin-towers-before-1.png">
+                            <div class="detail-item year-item">
+                                <span class="detail-year">2025</span>
+                            </div>
+                            <div class="detail-item description-item">
+                                <span class="detail-label">Taipei Twin Towers is a joint metro development project integrated with the Taoyuan Airport MRT A1 Station. It consists of skyscrapers featuring offices, shopping malls, hotels, and other facilities.</span>
+                            </div>
+                        </div>
+                        <!-- 2028區塊 -->
+                        <div class="detail-block" data-image="./images/taipei-twin-towers-after-1.png">
+                            <div class="detail-item year-item">
+                                <span class="detail-year">2027</span>
+                            </div>
+                            <div class="detail-item description-item">
+                                <span class="detail-label">Expected to be completed.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-description">
+                        <div class="location-map">
+                            <img src="./images/map-taipei-twin-towers.png" alt="位置地圖" class="map-image">
+                        </div>
+                    </div>
+                </div>
+                <div class="project-image">
+                    <img id="project-main-img-5" src="./images/taipei-twin-towers-before-1.png" alt="第五頁專案照片" class="project-img">
+                </div>
+            </div>
+        </section>
+
+        <!-- 6 -->
+        <section class="panel project-card" data-stage="6">
+            <div class="project-content">
+                <div class="project-image">
+                    <img id="project-main-img-6" src="./images/postal-towers-before-1.png" alt="第六頁專案照片" class="project-img">
+                </div>
+                <div class="project-info">
+                    <h1>Chunghwa Post Tower</h1>
+                    <div class="project-details">
+                        <!-- 可以添加detail-block給hover切換圖片 -->
+                        <div class="detail-block" data-image="./images/postal-towers-before-1.png">
+                            <div class="detail-item year-item">
+                                <span class="detail-year">2025</span>
+                            </div>
+                            <div class="detail-item description-item">
+                                <span class="detail-label">It will be developed into Taiwan's National Tech-Financial Center and the National Postal and Telecommunications Museum.</span>
+                            </div>
+                        </div>
+                        <div class="detail-block" data-image="./images/postal-towers-after-1.png">
+                            <div class="detail-item year-item">
+                                <span class="detail-year">2028</span>
+                            </div>
+                            <div class="detail-item description-item">
+                                <span class="detail-label">Expected to be completed.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-description">
+                        <div class="location-map">
+                            <img src="./images/map-taipei-post-office.png" alt="位置地圖" class="map-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7 -->
+        <section class="panel fullscreen-image" data-stage="7">
+            <div class="fullscreen-content">
+                <img src="./images/full-panorama.jpg" alt="全景圖" class="panorama-img">
+            </div>
+        </section>
+    </article>
+
+    <!-- 進度條 -->
+    <div class="progress-bar">
+        <div class="progress"></div>
+    </div>
+
+    <!-- 隱藏滾動條的額外腳本 -->
+    <script>
+        // 強制隱藏滾動條但保持滾動功能
+        function forceHideScrollbar() {
+            const style = document.createElement('style');
+            style.innerHTML = `
+                html, body {
+                    scrollbar-width: none !important;
+                    -ms-overflow-style: none !important;
+                }
+                html::-webkit-scrollbar,
+                body::-webkit-scrollbar,
+                *::-webkit-scrollbar {
+                    display: none !important;
+                    width: 0px !important;
+                    height: 0px !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // 立即執行
+        forceHideScrollbar();
+        
+        // 在頁面載入完成後再次執行
+        document.addEventListener('DOMContentLoaded', forceHideScrollbar);
+        window.addEventListener('load', forceHideScrollbar);
+    </script>
+
+    <!-- 簡化的滾動腳本 -->
+    <script>
+        /* ------------------ ScrollTrigger 設定 ------------------ */
+        gsap.registerPlugin(ScrollTrigger);
+
+        document.querySelectorAll('.panel').forEach((sec, index) => {
+            ScrollTrigger.create({
+                trigger: sec,
+                start: "top center",
+                end: "bottom center",
+                onUpdate: self => {
+                    const progress = (self.progress + index) / document.querySelectorAll('.panel').length * 100;
+                    const progressBar = document.querySelector('.progress');
+                    if (progressBar) {
+                        progressBar.style.height = progress + "%";
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 修正的第二頁圖片切換功能
+        const detailBlocks2 = document.querySelectorAll('[data-stage="2"] .detail-block');
+        const mainImage2 = document.getElementById('project-main-img');
+        
+        detailBlocks2.forEach(block => {
+            block.addEventListener('mouseenter', function() {
+                const imagePath = this.getAttribute('data-image');
+                if (imagePath && mainImage2) {
+                    // 使用 GSAP 創建更流暢的圖片切換動畫
+                    gsap.to(mainImage2, {
+                        opacity: 0.3,
+                        scale: 0.95,
+                        duration: 0.2,
+                        ease: "power2.out",
+                        onComplete: () => {
+                            mainImage2.src = imagePath;
+                            gsap.to(mainImage2, {
+                                opacity: 1,
+                                scale: 1,
+                                duration: 0.3,
+                                ease: "power2.out"
+                            });
+                        }
+                    });
+                }
+            });
+
+            // 添加 mouseleave 效果
+            block.addEventListener('mouseleave', function() {
+                // 可選：離開時微妙的效果
+                gsap.to(mainImage2, {
+                    scale: 1,
+                    duration: 0.2,
+                    ease: "power2.out"
+                });
+            });
+        });
+
+        // 第三頁圖片切換功能（跟第二頁相同的動畫）
+        const detailBlocks3 = document.querySelectorAll('[data-stage="3"] .detail-block');
+        const mainImage3 = document.getElementById('project-main-img-3');
+        
+        detailBlocks3.forEach(block => {
+            block.addEventListener('mouseenter', function() {
+                const imagePath = this.getAttribute('data-image');
+                if (imagePath && mainImage3) {
+                    // 使用跟第二頁相同的 GSAP 動畫
+                    gsap.to(mainImage3, {
+                        opacity: 0.3,
+                        scale: 0.95,
+                        duration: 0.2,
+                        ease: "power2.out",
+                        onComplete: () => {
+                            mainImage3.src = imagePath;
+                            gsap.to(mainImage3, {
+                                opacity: 1,
+                                scale: 1,
+                                duration: 0.3,
+                                ease: "power2.out"
+                            });
+                        }
+                    });
+                }
+            });
+
+            // 添加 mouseleave 效果（跟第二頁相同）
+            block.addEventListener('mouseleave', function() {
+                // 離開時微妙的縮放效果
+                gsap.to(mainImage3, {
+                    scale: 1,
+                    duration: 0.2,
+                    ease: "power2.out"
+                });
+            });
+        });
+
+        // 增強 hover 效果的 CSS 動畫
+        const style = document.createElement('style');
+        style.textContent = `
+            .detail-block {
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .detail-block::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+                transition: left 0.5s ease;
+                pointer-events: none;
+            }
+            
+            .detail-block:hover::before {
+                left: 100%;
+            }
+            
+            .detail-block:hover .detail-label {
+                color: #fff;
+                transform: translateX(3px);
+            }
+            
+            .detail-block:hover .detail-year {
+                color: #4A9EFF;
+                transform: scale(1.05);
+            }
+            
+            .detail-label, .detail-year {
+                transition: all 0.3s ease;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 第四頁動畫（跟第二頁相同）
+        const detailBlocks4 = document.querySelectorAll('[data-stage="4"] .detail-block');
+        const mainImage4 = document.getElementById('project-main-img-4');
+        
+        detailBlocks4.forEach(block => {
+            block.addEventListener('mouseenter', function() {
+                const imagePath = this.getAttribute('data-image');
+                if (imagePath && mainImage4) {
+                    gsap.to(mainImage4, {
+                        opacity: 0.3,
+                        scale: 0.95,
+                        duration: 0.2,
+                        ease: "power2.out",
+                        onComplete: () => {
+                            mainImage4.src = imagePath;
+                            gsap.to(mainImage4, {
+                                opacity: 1,
+                                scale: 1,
+                                duration: 0.3,
+                                ease: "power2.out"
+                            });
+                        }
+                    });
+                }
+            });
+
+            block.addEventListener('mouseleave', function() {
+                gsap.to(mainImage4, {
+                    scale: 1,
+                    duration: 0.2,
+                    ease: "power2.out"
+                });
+            });
+        });
+
+        // 第五頁動畫（跟第三頁相同）
+        const detailBlocks5 = document.querySelectorAll('[data-stage="5"] .detail-block');
+        const mainImage5 = document.getElementById('project-main-img-5');
+        
+        detailBlocks5.forEach(block => {
+            block.addEventListener('mouseenter', function() {
+                const imagePath = this.getAttribute('data-image');
+                if (imagePath && mainImage5) {
+                    gsap.to(mainImage5, {
+                        opacity: 0.3,
+                        scale: 0.95,
+                        duration: 0.2,
+                        ease: "power2.out",
+                        onComplete: () => {
+                            mainImage5.src = imagePath;
+                            gsap.to(mainImage5, {
+                                opacity: 1,
+                                scale: 1,
+                                duration: 0.3,
+                                ease: "power2.out"
+                            });
+                        }
+                    });
+                }
+            });
+
+            block.addEventListener('mouseleave', function() {
+                gsap.to(mainImage5, {
+                    scale: 1,
+                    duration: 0.2,
+                    ease: "power2.out"
+                });
+            });
+        });
+
+        // 第六頁動畫（跟第二頁相同）
+        const detailBlocks6 = document.querySelectorAll('[data-stage="6"] .detail-block');
+        const mainImage6 = document.getElementById('project-main-img-6');
+        
+        detailBlocks6.forEach(block => {
+            block.addEventListener('mouseenter', function() {
+                const imagePath = this.getAttribute('data-image');
+                if (imagePath && mainImage6) {
+                    gsap.to(mainImage6, {
+                        opacity: 0.3,
+                        scale: 0.95,
+                        duration: 0.2,
+                        ease: "power2.out",
+                        onComplete: () => {
+                            mainImage6.src = imagePath;
+                            gsap.to(mainImage6, {
+                                opacity: 1,
+                                scale: 1,
+                                duration: 0.3,
+                                ease: "power2.out"
+                            });
+                        }
+                    });
+                }
+            });
+
+            block.addEventListener('mouseleave', function() {
+                gsap.to(mainImage6, {
+                    scale: 1,
+                    duration: 0.2,
+                    ease: "power2.out"
+                });
+            });
+        });
+    });
+    </script>
+</body>
+</html>
+

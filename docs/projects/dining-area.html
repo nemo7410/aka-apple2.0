@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8" />
+    <title>Street View - Westside Urban Street Plan</title>
+
+    <!-- 使用共用樣式 -->
+    <link rel="stylesheet" href="../styles/common.css">
+    <link rel="stylesheet" href="../styles/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- 使用共用腳本 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="../js/common.js"></script>
+    
+    <!-- 頁面特定樣式（只保留必要的） -->
+    <style>
+        /* 第8頁背景圖片設定 */
+        .panel[data-stage="8"] {
+            background: url("../images/problem-page.jpg") center/cover no-repeat !important;
+            width: 100vw !important;
+            min-height: 100vh !important;
+            margin-left: calc(-50vw + 50%) !important;
+            padding: 0 !important;
+            position: relative !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #fff !important;
+        }
+
+        /* 黑色遮罩層 */
+        .panel[data-stage="8"]::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1;
+        }
+
+        /* 內容容器 - 調整位置稍微往下 */
+        .panel[data-stage="8"] .street-view-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 5vh 0 0 0 !important; /* 上方增加 8vh 的間距 */
+            background: none !important;
+        }
+
+        .panel[data-stage="8"] .street-view-content-inner {
+            background: none !important;
+            backdrop-filter: none !important;
+            border: none !important;
+            padding: 0 5vw !important;
+            max-width: 1200px;
+            text-align: center !important;
+        }
+
+        /* 標題樣式 */
+        .panel[data-stage="8"] .street-view-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            text-transform: none !important;
+            letter-spacing: normal !important;
+            color: #fff !important;
+        }
+
+        .panel[data-stage="8"] .street-view-title {
+            font-size: 2.4rem;
+            margin-bottom: 1rem;
+            color: #fff !important;
+        }
+
+        /* 網格布局 */
+        .panel[data-stage="8"] .street-view-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            text-align: left;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* 左右區塊標題 */
+        .panel[data-stage="8"] .style-section h3,
+        .panel[data-stage="8"] .features-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: none !important;
+            padding-bottom: 0 !important;
+            color: #fff !important;
+        }
+
+        /* 文字內容 */
+        .panel[data-stage="8"] .style-section p,
+        .panel[data-stage="8"] .features-section li {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #fff !important;
+        }
+
+        .panel[data-stage="8"] .features-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .panel[data-stage="8"] .features-section li {
+            margin-bottom: 1rem;
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .panel[data-stage="8"] .features-section li::before {
+            content: "·";
+            position: absolute;
+            left: 0;
+            color: #fff !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- 導航列容器（會被 common.js 自動載入 nav.html） -->
+    <div class="nav-container">
+        <!-- 導航列內容 -->
+    </div>
+
+    <!-- 主要內容 -->
+    <div class="scroll-container">
+        <!-- 第8頁 - Solution 頁面 -->
+        <section class="panel" data-stage="8">
+            <div class="street-view-content">
+                <div class="street-view-content-inner">
+                    <div class="street-view-subtitle">Solution</div>
+                    <h1 class="street-view-title">Dinning Area</h1>
+                    
+                    <div class="street-view-grid">
+                        <div class="style-section">
+                            <h3>Design Style</h3>
+                            <p>The dining area adopts an open-street layout inspired by pedestrian-friendly urban plazas. Seating and greenery are arranged along the building edges to maintain central pedestrian flow. Materials such as stone paving and modular wooden furniture are selected to harmonize with surrounding architecture while enhancing comfort and flexibility for outdoor dining.</p>
+                        </div>
+                        
+                        <div class="features-section">
+                            <h3>Key Features</h3>
+                            <ul>
+                                <li><strong>Flexible Seating Layout</strong>：Modular furniture supports different group sizes and event setups.</li>
+                                <li><strong>Walkway Preservation</strong>：Dining spaces are offset to preserve pedestrian circulation.</li>
+                                <li><strong>Event-Friendly Design</strong>：The layout allows pop-up stages or weekend performances.</li>
+                                <li><strong>Environmental Integration</strong>：Use of trees, planters, and lighting to create a cozy, shaded atmosphere.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第9頁 - Building Transformation -->
+        <section class="panel fullwidth" data-stage="9">
+            <div class="image-comparison">
+                <img src="../images/smoking-area-a.png" alt="After" class="after">
+                <img src="../images/smoking-area-b.png" alt="Before" class="before">
+                <input type="range" min="0" max="100" value="100" class="slider">
+                <div class="slider-line"></div>
+                <div class="slider-handle"></div>
+                <div class="before-label">BEFORE</div>
+                <div class="after-label">AFTER</div>
+            </div>
+        </section>
+
+        <!-- 第10頁 - Street Infrastructure -->
+        <section class="panel fullwidth" data-stage="10">
+            <div class="image-comparison">
+                <img src="../images/plaza-a.png" alt="After" class="after">
+                <img src="../images/plaza-b.png" alt="Before" class="before">
+                <input type="range" min="0" max="100" value="100" class="slider">
+                <div class="slider-line"></div>
+                <div class="slider-handle"></div>
+                <div class="before-label">BEFORE</div>
+                <div class="after-label">AFTER</div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

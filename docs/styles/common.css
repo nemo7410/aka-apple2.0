@@ -1,0 +1,219 @@
+/* styles/common.css */
+/* 基本樣式 */
+html {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: "Microsoft JhengHei", sans-serif;
+    overflow-x: hidden;
+    background: #000;
+    color: #fff;
+    width: 100%;
+    position: relative;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+/* 導航欄樣式 */
+.nav-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem 5vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 1002;
+    background: linear-gradient(to bottom, 
+        rgba(0, 0, 0, 0.8) 0%,
+        rgba(0, 0, 0, 0.6) 50%,
+        rgba(0, 0, 0, 0) 100%
+    );
+    height: 100px;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    padding-top: 0.5rem;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    padding-top: 0.5rem;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* 下拉選單樣式 */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    color: #fff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.dropdown-toggle i {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    min-width: 180px;
+    padding: 0.5rem 0;
+    border-radius: 4px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    margin-top: 0.5rem;
+}
+
+.dropdown:hover .dropdown-toggle i {
+    transform: rotate(180deg);
+}
+
+.dropdown-item {
+    color: #fff;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    display: block;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 基本面板樣式 */
+.panel {
+    width: 45vw;
+    min-height: 100vh;
+    padding: 6rem 5vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: linear-gradient(to right, rgba(0,0,0,.85) 0%, rgba(0,0,0,0) 100%);
+}
+
+.panel h1 {
+    font-size: 2.4rem;
+    margin: 0 0 1rem 0;
+}
+
+.panel p {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.panel .total-number {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+}
+
+/* 滾動區域樣式 */
+article#scrolly {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    overflow-x: hidden;
+    pointer-events: none !important;
+}
+
+/* 面板樣式擴展 */
+.panel {
+    pointer-events: auto !important;
+}
+
+.panel.landing {
+    width: 100vw;
+    min-height: 100vh;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("../images/homepage.jpg") center/cover no-repeat;
+}
+
+.panel.fullwidth {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.panel.fullwidth .image-comparison {
+    width: 100%;
+    margin-left: 0;
+}
+
+.panel.fullwidth .image-comparison img {
+    object-fit: cover;
+}
+
+/* 首頁內容樣式 */
+.landing-content {
+    position: relative;
+    z-index: 1001;
+    text-align: center;
+    max-height: 66vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.landing-title {
+    font-size: 3.5rem;
+    margin-bottom: 2rem;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.landing-description {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 800px;
+    margin: 0 auto;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}

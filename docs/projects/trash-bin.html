@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8" />
+    <title>Street View - Westside Urban Street Plan</title>
+
+    <!-- 使用共用樣式 -->
+    <link rel="stylesheet" href="../styles/common.css">
+    <link rel="stylesheet" href="../styles/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- 使用共用腳本 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="../js/common.js"></script>
+    
+    <!-- 頁面特定樣式 -->
+    <style>
+        /* 第1頁背景圖片設定 */
+        .panel[data-stage="1"] {
+            background: url("../images/trash-bin.jpg") center/cover no-repeat !important;
+            width: 100vw !important;
+            min-height: 100vh !important;
+            margin-left: calc(-50vw + 50%) !important;
+            padding: 0 !important;
+            position: relative !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #fff !important;
+        }
+
+        /* 黑色遮罩層 */
+        .panel[data-stage="1"]::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1;
+        }
+
+        /* 內容容器 - 調整位置稍微往下 */
+        .panel[data-stage="1"] .street-view-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 5vh 0 0 0 !important;
+            background: none !important;
+        }
+
+        .panel[data-stage="1"] .street-view-content-inner {
+            background: none !important;
+            backdrop-filter: none !important;
+            border: none !important;
+            padding: 0 5vw !important;
+            max-width: 1200px;
+            text-align: center !important;
+        }
+
+        /* 標題樣式 */
+        .panel[data-stage="1"] .street-view-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            text-transform: none !important;
+            letter-spacing: normal !important;
+            color: #fff !important;
+        }
+
+        .panel[data-stage="1"] .street-view-title {
+            font-size: 2.4rem;
+            margin-bottom: 1rem;
+            color: #fff !important;
+        }
+
+        /* 網格布局 */
+        .panel[data-stage="1"] .street-view-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            text-align: left;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* 左右區塊標題 */
+        .panel[data-stage="1"] .style-section h3,
+        .panel[data-stage="1"] .features-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: none !important;
+            padding-bottom: 0 !important;
+            color: #fff !important;
+        }
+
+        /* 文字內容 */
+        .panel[data-stage="1"] .style-section p,
+        .panel[data-stage="1"] .features-section li {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #fff !important;
+        }
+
+        .panel[data-stage="1"] .features-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .panel[data-stage="1"] .features-section li {
+            margin-bottom: 1rem;
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .panel[data-stage="1"] .features-section li::before {
+            content: "·";
+            position: absolute;
+            left: 0;
+            color: #fff !important;
+        }
+
+        /* 第2、3、4頁左右分割布局 */
+        .panel[data-stage="2"],
+        .panel[data-stage="3"],
+        .panel[data-stage="4"] {
+            width: 100vw !important;
+            min-height: 100vh !important;
+            margin-left: calc(-50vw + 50%) !important;
+            padding: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            background: #000 !important;
+        }
+
+        .panel[data-stage="2"] .page-content,
+        .panel[data-stage="3"] .page-content,
+        .panel[data-stage="4"] .page-content {
+            width: 100%;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            background: #000;
+        }
+
+        .panel[data-stage="2"] .text-section,
+        .panel[data-stage="3"] .text-section,
+        .panel[data-stage="4"] .text-section {
+            padding: 5rem;
+            background: #000;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .panel[data-stage="2"] .image-section,
+        .panel[data-stage="3"] .image-section,
+        .panel[data-stage="4"] .image-section {
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #000000;
+        }
+
+        /* 各頁面特定背景圖片 */
+        .panel[data-stage="2"] .image-section {
+            background-image: url("../bin/1.82.png");
+        }
+
+        .panel[data-stage="3"] .image-section {
+            background-image: url("../bin/1.81.png");
+        }
+
+        .panel[data-stage="4"] .image-section {
+            background-image: url("../bin/1.83.png");
+        }
+
+        /* 文字樣式 */
+        .text-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .text-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+        }
+
+        .text-section p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .text-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .text-section li {
+            margin-bottom: 0.8rem;
+            position: relative;
+            padding-left: 1.5rem;
+            color: #fff;
+        }
+
+        .text-section li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* 第5頁 影片展示 */
+        .panel[data-stage="5"] {
+            width: 100vw !important;
+            min-height: 100vh !important;
+            margin-left: calc(-50vw + 50%) !important;
+            padding: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background: #000 !important;
+            flex-direction: column !important;
+        }
+
+        .panel[data-stage="5"] .video-title {
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .panel[data-stage="5"] video {
+            width: 80vw;
+            max-width: 1200px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .panel[data-stage="5"] .video-description {
+            color: #fff;
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .panel[data-stage="5"] .video-controls {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .panel[data-stage="5"] .video-controls button {
+            background: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .panel[data-stage="5"] .video-controls button:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <!-- 導航列容器（會被 common.js 自動載入 nav.html） -->
+    <div class="nav-container">
+        <!-- 導航列內容 -->
+    </div>
+
+    <!-- 主要內容 -->
+    <div class="scroll-container">
+        <!-- 第1頁 - Solution 頁面 -->
+        <section class="panel" data-stage="1">
+            <div class="street-view-content">
+                <div class="street-view-content-inner">
+                    <div class="street-view-subtitle">Solution</div>
+                    <h1 class="street-view-title">Trash Bin</h1>
+                    
+                    <div class="street-view-grid">
+                        <div class="style-section">
+                            <h3>Design Concept</h3>
+                            <p>The trash bin features a minimalist industrial design with a matte metallic finish and geometric perforations. The square-cut holes not only enhance ventilation but also allow colored inner linings—yellow, green, and red—to represent different waste categories. The unified rectangular form and subtle surface texture reflect modern urban aesthetics, making it suitable for public spaces like campuses, parks, and transit hubs.</p>
+                        </div>
+                        
+                        <div class="features-section">
+                            <h3>Key Features</h3>
+                            <ul>
+                                <li><strong>Smart Sensor System</strong>：Detects the fill level and alerts the system when nearly full.</li>
+                                <li><strong>Modular Sorting</strong>：Three compartments for PET bottles, recyclables, and general waste.</li>
+                                <li><strong>Sturdy Materials</strong>：Weather-resistant metal body ensures durability outdoors.</li>
+                                <li><strong>Optional Solar-Powered Compression</strong>：Reduces collection frequency and saves resources.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第2頁 - 外形尺寸 -->
+        <section class="panel" data-stage="2">
+            <div class="page-content">
+                <div class="text-section">
+                    <h2>Sensor Module</h2>
+                    <p>The sensor module is mounted on the inner wall of the bin and can detect the fill level of trash in real time. Using an infrared sensor, it accurately monitors the bin's capacity, serving as a key source of data for smart monitoring.</p>
+                </div>
+                <div class="image-section"></div>
+            </div>
+        </section>
+
+        <!-- 第3頁 - 技術特色 -->
+        <section class="panel" data-stage="3">
+            <div class="page-content">
+                <div class="text-section">
+                    <h2>Data Upload System</h2>
+                    <p>A low-power wireless communication module is installed inside the bin, enabling automatic upload of sensor data to the environmental protection agency's backend. Integrated with a cloud-based management system, it enables real-time monitoring and trend analysis to enhance the efficiency of waste collection decisions.</p>
+                </div>
+                <div class="image-section"></div>
+            </div>
+        </section>
+
+        <!-- 第4頁 - 應用場景 -->
+        <section class="panel" data-stage="4">
+            <div class="page-content">
+                <div class="text-section">
+                    <h2>Full-Capacity Notification Mechanism</h2>
+                    <p>When the trash level exceeds a preset threshold, the system sends an instant full-capacity alert through the platform, notifying sanitation workers to proceed with collection. Combined with standardized exterior identification and indicator lights, this helps improve city cleanliness and collection efficiency.</p>
+                </div>
+                <div class="image-section"></div>
+            </div>
+        </section>
+
+        <!-- 第5頁 - 影片展示 -->
+        <section class="panel" data-stage="5">
+            <h2 class="video-title">Product showcase video</h2>
+            
+            <video 
+                id="product-video" 
+                controls 
+                preload="metadata"
+                poster="../bin/1.80.png">
+                <source src="../bin/VIDEO.mp4" type="video/mp4">
+                您的瀏覽器不支援 HTML5 影片播放。
+            </video>
+            
+            <div class="video-controls">
+                <button onclick="playPause()">Play/Pause</button>
+                <button onclick="muteUnmute()">Mute/Unmute</button>
+                <button onclick="fullScreen()">Full Screen</button>
+                <button onclick="restartVideo()">Replay</button>
+            </div>
+            
+            <p class="video-description">
+                Complete presentation of the smart trash can.
+            </p>
+        </section>
+    </div>
+
+    <script>
+        // 影片控制函數
+        function playPause() {
+            const video = document.getElementById('product-video');
+            if (video.paused) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        }
+        
+        function muteUnmute() {
+            const video = document.getElementById('product-video');
+            video.muted = !video.muted;
+        }
+        
+        function fullScreen() {
+            const video = document.getElementById('product-video');
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.webkitRequestFullscreen) {
+                video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) {
+                video.msRequestFullscreen();
+            }
+        }
+        
+        function restartVideo() {
+            const video = document.getElementById('product-video');
+            video.currentTime = 0;
+            video.play();
+        }
+        
+        // 影片載入事件監聽
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.getElementById('product-video');
+            
+            video.addEventListener('loadstart', function() {
+                console.log('影片開始載入');
+            });
+            
+            video.addEventListener('loadeddata', function() {
+                console.log('影片資料載入完成');
+            });
+            
+            video.addEventListener('error', function(e) {
+                console.error('影片載入錯誤:', e);
+            });
+        });
+    </script>
+</body>
+</html>
